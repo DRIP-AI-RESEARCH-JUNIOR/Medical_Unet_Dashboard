@@ -11,8 +11,8 @@ def save_checkpoint(save_path, model, train_loss, val_loss, start_epoch):
                   'train_loss': train_loss,
                   'val_loss' : val_loss,
                   'start_epoch' : start_epoch}
-    print(os.path.join(os.getcwd(),save_path))
-    torch.save(state_dict, os.path.join(os.getcwd(),save_path))
+    #print(os.path.join(os.getcwd(),save_path))
+    torch.save(state_dict, save_path)
     print(f'Model saved to ==> {save_path}')
 
 def load_checkpoint(load_path, model, device='cpu'):

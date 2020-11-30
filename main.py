@@ -40,8 +40,8 @@ def train(model, train_loader, device, optimizer):
         optimizer.zero_grad()
         y_pred = model(x.to(device))
         loss = dsc_loss(y_pred, y.to(device))
-        train_loss_list.append(loss.item())
-        train_loss_detail.line_chart(np.array(train_loss_list))
+        #train_loss_list.append(loss.item())
+        #train_loss_detail.line_chart(np.array(train_loss_list))
         progress_bar.progress((i+1)/len(train_loader))
 
         loss.backward()
@@ -83,7 +83,7 @@ if(add_selectbox == 'Training'):
 
     if st.button('Load Data'):
         dsc_loss = DiceLoss()
-        dataset = SyntheticCellDataset('dataset/image', 'dataset/mask')
+        dataset = SyntheticCellDataset('dataset')
         indices = torch.randperm(len(dataset)).tolist()
         sr = int(0.2 * len(dataset))
         train_set = torch.utils.data.Subset(dataset, indices[:-sr])
@@ -106,11 +106,11 @@ if(add_selectbox == 'Training'):
         chart_data = pd.DataFrame(np.array([overall_train, overall_val]).transpose(), columns=['Train', 'Val'])
         #chart_data.columns = ['Train','Val']
         #st.line_chart(chart_data)
-        train_chart = st.empty()
+        train_chart = st.sidebar.empty()
         train_bar = st.empty()
         val_overall = 1000
-        train_loss_list = []
-        train_loss_detail = st.sidebar.empty()
+        #train_loss_list = []
+        #train_loss_detail = st.empty()
         for epoch in range(epochs):
             model, train_loss, optimizer = train(model, train_loader, device, optimizer)
             val_loss = validate(model, val_loader, device)
@@ -120,7 +120,7 @@ if(add_selectbox == 'Training'):
             train_chart.line_chart(chart_data)
             train_bar.bar_chart(chart_data)
             if val_loss < val_overall:
-                save_checkpoint('./weight//epoch_'+str(epoch+1), model, train_loss, val_loss, epoch)
+                save_checkpoint('./weight/epoch_'+str(epoch+1), model, train_loss, val_loss, epoch)
                 val_overall = val_loss
 
             st.write('[{}/{}] train loss :{} val loss : {}'.format(epoch+1, epochs, train_loss, val_loss))
@@ -140,10 +140,10 @@ if(add_selectbox == 'Evaluation'):
         model.to(device)
         load_checkpoint('./weight/'+str(selected_weight), model, device=device)
         model.eval()
-        uploaded_file = st.file_uploader("Upload an Image", type=['png', 'PNG'])
+        uploaded_file = st.file_uploader("Upload an Image", type=['tif', 'TIF'])
         if uploaded_file is not None:
             image = Image.open(uploaded_file).convert('L')
-            resize = transforms.Resize(size=(256, 256))
+            resize = transforms.Resize(size=(576, 576))
             image = resize(image)
             st.write('Input Image')
             st.image(image, caption='Uploaded Image.', use_column_width=True)
