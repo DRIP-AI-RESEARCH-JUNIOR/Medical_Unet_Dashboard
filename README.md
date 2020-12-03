@@ -17,7 +17,7 @@
 *Working Directory*  
 
 ### Then run the app  
-    ```streamlit run main.py```  
+```streamlit run main.py```  
     
 ### Open the network URL generted on any browser  
 ![](https://github.com/DRIP-AI-RESEARCH-JUNIOR/Medical_Unet_Dashboard/blob/main/img/img_1.png)  
